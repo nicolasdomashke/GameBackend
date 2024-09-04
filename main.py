@@ -1,13 +1,8 @@
-from flask import Flask, request, jsonify
+from fastapi import FastAPI
 
-app = Flask(__name__)
+app = FastAPI()
 
-@app.route('/data', methods=['POST'])
-def receive_data():
-    data = request.json
-    # Process the data here
-    response = {"status": "success", "received": data}
-    return jsonify(response)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+@app.post("/data")
+async def receive_data(data):
+    # Process data here
+    return {"status": "success", "data": data.dict()}
