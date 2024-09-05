@@ -50,9 +50,7 @@ def time_reformat(t: time):
 
 @app.get("/test")
 async def test_reader():
-    response = {"status": "success"}
-    json_response = json.dumps(response, ensure_ascii=False).encode('utf-8') 
-    return Response(content=json_response, media_type="application/json; charset=utf-8")
+    return {"status": "success"}
     
 @app.get("/leaderboard/{level}")
 async def get_leaderboard(level: int):
