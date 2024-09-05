@@ -55,32 +55,30 @@ async def test_reader():
 @app.get("/leaderboard/{level}")
 async def get_leaderboard(level: int):
     query = session.query(User.login, getattr(User, f"time{level}")).all()
-    result = {row.login: time_reformat(row._mapping[getattr(User, f"time{level}")]) for row in query}
-    json_response = json.dumps(result, ensure_ascii=False).encode('utf-8') 
-    return Response(content=json_response, media_type="application/json; charset=utf-8")
+    if query:
+        result = {row.login: time_reformat(row._mapping[getattr(User, f"time{level}")]) for row in query}
+        return {"status": "success", "data": result}
+    else:
+        return {"status": "error"}
 
 @app.post("/register")
 async def new_user(data: User_data):
     query = session.query(User).filter(User.login == data.login)
     if query.all():
-        response = {"status": "error"}
+        return {"status": "error"}
     else:
         new_user = User(login=data.login, password=data.password)
         session.add(new_user)
         session.commit()
-        response = {"status": "success"}  
-    json_response = json.dumps(response, ensure_ascii=False).encode('utf-8') 
-    return Response(content=json_response, media_type="application/json; charset=utf-8")
+        return {"status": "success"} 
     
 @app.post("/login")
 async def login(data: User_data):
     query = session.query(User).filter(User.login == data.login, User.password == data.password)
     if query.all():
-        response = {"status": "success"}
+        return {"status": "success"}
     else:
-        response = {"status": "error"}
-    json_response = json.dumps(response, ensure_ascii=False).encode('utf-8') 
-    return Response(content=json_response, media_type="application/json; charset=utf-8")
+        return {"status": "error"}
     
 @app.post("/insert")
 async def insert_time(data: Time_data):
@@ -88,8 +86,6 @@ async def insert_time(data: Time_data):
     if query:
         setattr(query, f"time{data.level}", float_to_time(data.time0))
         session.commit()
-        response = {"status": "success"}
+        return {"status": "success"}
     else:
-        response = {"status": "error"}
-    json_response = json.dumps(response, ensure_ascii=False).encode('utf-8') 
-    return Response(content=json_response, media_type="application/json; charset=utf-8")
+        return {"status": "error"}
