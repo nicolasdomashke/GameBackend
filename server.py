@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String, Time
 from sqlalchemy.ext.declarative import declarative_base
@@ -52,7 +52,7 @@ def time_reformat(t: time):
 async def root_reader():
     response = {"status": "success"}
     json_response = json.dumps(response, ensure_ascii=False).encode('utf-8') 
-    return JSONResponse(content=json_response, media_type="application/json; charset=utf-8")
+    return Response(content=json_response, media_type="application/json; charset=utf-8")
     
 @app.get("/leaderboard/{level}")
 async def get_leaderboard(level: int):
