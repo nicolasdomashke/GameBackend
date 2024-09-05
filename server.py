@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import time
+import json
 
 Base = declarative_base()
 engine = create_engine('sqlite:///database.sqlite3')
@@ -49,8 +50,9 @@ def time_reformat(t: time):
 
 @app.get("/")
 async def root_reader():
-    response = {"status": "success"}  
-    return JSONResponse(content=response, media_type="application/json; charset=utf-8")
+    response = {"status": "success"}
+    json_response = json.dumps(response, ensure_ascii=False).encode('utf-8') 
+    return JSONResponse(content=json_response, media_type="application/json; charset=utf-8")
     
 @app.get("/leaderboard/{level}")
 async def get_leaderboard(level: int):
