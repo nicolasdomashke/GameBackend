@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String, Time
 from sqlalchemy.ext.declarative import declarative_base
@@ -50,26 +51,28 @@ def time_reformat(t: time):
 async def get_leaderboard(level: int):
     query = session.query(User.login, getattr(User, f"time{level}")).all()
     result = {row.login: time_reformat(row._mapping[getattr(User, f"time{level}")]) for row in query}
-    return result
+    return JSONResponse(content=result, media_type="application/json")
 
 @app.post("/register")
 async def new_user(data: User_data):
     query = session.query(User).filter(User.login == data.login)
     if query.all():
-        return "{\"status\": \"error\"}"
+        response = {"status": "error"}
     else:
         new_user = User(login=data.login, password=data.password)
         session.add(new_user)
         session.commit()
-        return "{\"status\": \"success\"}"
+        response = {"status": "success"}  
+    return JSONResponse(content=response, media_type="application/json")
     
 @app.post("/login")
 async def login(data: User_data):
     query = session.query(User).filter(User.login == data.login, User.password == data.password)
     if query.all():
-        return "{\"status\": \"success\"}"
+        response = {"status": "success"}
     else:
-        return "{\"status\": \"error\"}"
+        response = {"status": "error"}
+    return JSONResponse(content=response, media_type="application/json")
     
 @app.post("/insert")
 async def insert_time(data: Time_data):
@@ -77,6 +80,7 @@ async def insert_time(data: Time_data):
     if query:
         setattr(query, f"time{data.level}", float_to_time(data.time0))
         session.commit()
-        return "{\"status\": \"success\"}"
+        response = {"status": "success"}
     else:
-        return "{\"status\": \"error\"}"
+        response = {"status": "error"}
+    return JSONResponse(content=response, media_type="application/json")
