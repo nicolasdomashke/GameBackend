@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import Response
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String, Time
 from sqlalchemy.ext.declarative import declarative_base
@@ -48,8 +48,8 @@ def float_to_time(santiseconds):
 def time_reformat(t: time):
     return f"{t.minute}:{t.second}:{t.microsecond // 10000}"
 
-@app.get("/")
-async def root_reader():
+@app.get("/test")
+async def test_reader():
     response = {"status": "success"}
     json_response = json.dumps(response, ensure_ascii=False).encode('utf-8') 
     return Response(content=json_response, media_type="application/json; charset=utf-8")
@@ -58,7 +58,8 @@ async def root_reader():
 async def get_leaderboard(level: int):
     query = session.query(User.login, getattr(User, f"time{level}")).all()
     result = {row.login: time_reformat(row._mapping[getattr(User, f"time{level}")]) for row in query}
-    return JSONResponse(content=result, media_type="application/json; charset=utf-8")
+    json_response = json.dumps(result, ensure_ascii=False).encode('utf-8') 
+    return Response(content=json_response, media_type="application/json; charset=utf-8")
 
 @app.post("/register")
 async def new_user(data: User_data):
@@ -70,7 +71,8 @@ async def new_user(data: User_data):
         session.add(new_user)
         session.commit()
         response = {"status": "success"}  
-    return JSONResponse(content=response, media_type="application/json; charset=utf-8")
+    json_response = json.dumps(response, ensure_ascii=False).encode('utf-8') 
+    return Response(content=json_response, media_type="application/json; charset=utf-8")
     
 @app.post("/login")
 async def login(data: User_data):
@@ -79,7 +81,8 @@ async def login(data: User_data):
         response = {"status": "success"}
     else:
         response = {"status": "error"}
-    return JSONResponse(content=response, media_type="application/json; charset=utf-8")
+    json_response = json.dumps(reresponsesult, ensure_ascii=False).encode('utf-8') 
+    return Response(content=json_response, media_type="application/json; charset=utf-8")
     
 @app.post("/insert")
 async def insert_time(data: Time_data):
@@ -90,4 +93,5 @@ async def insert_time(data: Time_data):
         response = {"status": "success"}
     else:
         response = {"status": "error"}
-    return JSONResponse(content=response, media_type="application/json; charset=utf-8")
+    json_response = json.dumps(response, ensure_ascii=False).encode('utf-8') 
+    return Response(content=json_response, media_type="application/json; charset=utf-8")
