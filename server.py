@@ -81,7 +81,7 @@ async def login(data: User_data):
         response = {"status": "success"}
     else:
         response = {"status": "error"}
-    json_response = json.dumps(reresponsesult, ensure_ascii=False).encode('utf-8') 
+    json_response = json.dumps(response, ensure_ascii=False).encode('utf-8') 
     return Response(content=json_response, media_type="application/json; charset=utf-8")
     
 @app.post("/insert")
