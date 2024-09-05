@@ -56,20 +56,20 @@ async def get_leaderboard(level: int):
 async def new_user(data: User_data):
     query = session.query(User).filter(User.login == data.login)
     if query.all():
-        return {"status": "error"}
+        return "{\"status\": \"error\"}"
     else:
         new_user = User(login=data.login, password=data.password)
         session.add(new_user)
         session.commit()
-        return {"status": "success"}
+        return "{\"status\": \"success\"}"
     
 @app.post("/login")
 async def login(data: User_data):
     query = session.query(User).filter(User.login == data.login, User.password == data.password)
     if query.all():
-        return {"status": "success"}
+        return "{\"status\": \"success\"}"
     else:
-        return {"status": "error"}
+        return "{\"status\": \"error\"}"
     
 @app.post("/insert")
 async def insert_time(data: Time_data):
@@ -77,6 +77,6 @@ async def insert_time(data: Time_data):
     if query:
         setattr(query, f"time{data.level}", float_to_time(data.time0))
         session.commit()
-        return {"status": "success"}
+        return "{\"status\": \"success\"}"
     else:
-        return {"status": "error"}
+        return "{\"status\": \"error\"}"
