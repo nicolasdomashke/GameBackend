@@ -47,6 +47,11 @@ def float_to_time(santiseconds):
 def time_reformat(t: time):
     return f"{t.minute}:{t.second}:{t.microsecond // 10000}"
 
+@app.get("/")
+async def root_reader():
+    response = {"status": "success"}  
+    return JSONResponse(content=response, media_type="application/json; charset=utf-8")
+    
 @app.get("/leaderboard/{level}")
 async def get_leaderboard(level: int):
     query = session.query(User.login, getattr(User, f"time{level}")).all()
