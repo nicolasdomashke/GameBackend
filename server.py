@@ -34,7 +34,7 @@ class User(Base):
     time3 = Column(Time)
     time4 = Column(Time)
     time5 = Column(Time)
-    timet = Column(Time)
+    time0 = Column(Time)
 
 def float_to_time(santiseconds):
     if santiseconds >= 360000:
