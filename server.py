@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import time
+import json
 
 Base = declarative_base()
 engine = create_engine('sqlite:///database.sqlite3')
@@ -51,7 +52,7 @@ def time_reformat(t: time):
 async def get_leaderboard(level: int):
     query = session.query(User.login, getattr(User, f"time{level}")).all()
     result = {row.login: time_reformat(row._mapping[getattr(User, f"time{level}")]) for row in query}
-    return JSONResponse(content=result, media_type="application/json")
+    return JSONResponse(content=json.dumps(result), media_type="application/json")
 
 @app.post("/register")
 async def new_user(data: User_data):
@@ -63,7 +64,7 @@ async def new_user(data: User_data):
         session.add(new_user)
         session.commit()
         response = {"status": "success"}  
-    return JSONResponse(content=response, media_type="application/json")
+    return JSONResponse(content=json.dumps(response), media_type="application/json")
     
 @app.post("/login")
 async def login(data: User_data):
@@ -72,7 +73,7 @@ async def login(data: User_data):
         response = {"status": "success"}
     else:
         response = {"status": "error"}
-    return JSONResponse(content=response, media_type="application/json")
+    return JSONResponse(content=json.dumps(response), media_type="application/json")
     
 @app.post("/insert")
 async def insert_time(data: Time_data):
@@ -83,4 +84,4 @@ async def insert_time(data: Time_data):
         response = {"status": "success"}
     else:
         response = {"status": "error"}
-    return JSONResponse(content=response, media_type="application/json")
+    return JSONResponse(content=json.dumps(response), media_type="application/json")
