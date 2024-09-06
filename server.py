@@ -5,7 +5,6 @@ from sqlalchemy import create_engine, Column, Integer, String, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import time
-import json
 
 Base = declarative_base()
 engine = create_engine('sqlite:///database.sqlite3')
@@ -23,7 +22,7 @@ class User_data(BaseModel):
 class Time_data(BaseModel):
     login: str
     level: int = 0
-    time0: int
+    time_new: int
 
 class User(Base):
     __tablename__ = 'users'
@@ -84,7 +83,9 @@ async def login(data: User_data):
 async def insert_time(data: Time_data):
     query = session.query(User).filter(User.login == data.login).first()
     if query:
-        setattr(query, f"time{data.level}", float_to_time(data.time0))
+        new_time = float_to_time(data.time_new)
+        if new_time < getattr(query, f"time{data.level}"):
+            setattr(query, f"time{data.level}", new_time)
         session.commit()
         return {"status": "success"}
     else:
