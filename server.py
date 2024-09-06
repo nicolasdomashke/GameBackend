@@ -84,7 +84,7 @@ async def insert_time(data: Time_data):
     query = session.query(User).filter(User.login == data.login).first()
     if query:
         new_time = float_to_time(data.time_new)
-        if new_time < getattr(query, f"time{data.level}"):
+        if getattr(query, f"time{data.level}") == None or new_time < getattr(query, f"time{data.level}"):
             setattr(query, f"time{data.level}", new_time)
         session.commit()
         return {"status": "success"}
