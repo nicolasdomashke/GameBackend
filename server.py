@@ -45,7 +45,8 @@ def float_to_time(santiseconds):
     return time(minute=minutes, second=seconds, microsecond=santiseconds * 10000)
 
 def time_reformat(t: time):
-    return f"{t.minute}:{t.second}:{t.microsecond // 10000}"
+    centies = t.microsecond // 10000
+    return f"{t.minute:02}:{t.second:02}:{centies:02}"
 
 @app.get("/test")
 async def test_reader():
