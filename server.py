@@ -55,7 +55,7 @@ async def test_reader():
 async def get_leaderboard(level: int):
     query = session.query(User.login, getattr(User, f"time{level}")).all()
     if query:
-        dictionary = {row.login: time_reformat(row._mapping[getattr(User, f"time{level}")]) for row in query}
+        dictionary = {row.login: time_reformat(row._mapping[getattr(User, f"time{level}")]) for row in query if row._mapping[getattr(User, f"time{level}")] != None}
         result = dict(sorted(dictionary.items(), key=lambda x: x[1]))
         return {"status": "success", "keys": list(result.keys()), "values": list(result.values())}
     else:
