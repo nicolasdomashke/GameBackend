@@ -59,7 +59,7 @@ async def get_leaderboard(level: int):
         result = dict(sorted(dictionary.items(), key=lambda x: x[1]))
         for key in result:
             print(key, result[key])
-        return {"status": "success", "data": result}
+        return {"status": "success", "data": result.dict()}
     else:
         return {"status": "error"}
 
