@@ -21,7 +21,6 @@ class User_data(BaseModel):
 
 class Time_data(BaseModel):
     login: str
-    level: int = 0
     time_new: int
 
 class User(Base):
@@ -80,13 +79,13 @@ async def login(data: User_data):
     else:
         return {"status": "error"}
     
-@app.post("/insert")
-async def insert_time(data: Time_data):
+@app.post("/insert/{level}")
+async def insert_time(data: Time_data, level: int):
     query = session.query(User).filter(User.login == data.login).first()
     if query:
         new_time = float_to_time(data.time_new)
-        if getattr(query, f"time{data.level}") == None or new_time < getattr(query, f"time{data.level}"):
-            setattr(query, f"time{data.level}", new_time)
+        if getattr(query, f"time{level}") == None or new_time < getattr(query, f"time{level}"):
+            setattr(query, f"time{level}", new_time)
         session.commit()
         return {"status": "success"}
     else:
