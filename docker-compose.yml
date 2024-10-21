@@ -3,6 +3,6 @@ services:
   web:
     build: .
     volumes:
-      - ./data:app/data
+      - ./data:/app/data
     ports:
       - "8000:8000"
