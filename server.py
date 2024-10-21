@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from datetime import time
 
 Base = declarative_base()
-engine = create_engine('sqlite:///database.sqlite3')
+engine = create_engine('sqlite:///data/database.sqlite3')
 Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
